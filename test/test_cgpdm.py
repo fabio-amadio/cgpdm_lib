@@ -32,7 +32,7 @@ p.add_argument('-d',
                help = 'latent dim.')
 p.add_argument('-num_opt_steps',
                type = int,
-               default = 25,
+               default = 26,
                help = 'optimization steps')
 p.add_argument('-lr',
                type = float,
