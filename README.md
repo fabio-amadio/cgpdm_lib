@@ -5,6 +5,20 @@ Class __GPDM()__ implements original model from __Wang et al. (2005) "Gaussian p
 
 Class __CGPDM()__ extends the main class to take into account also the presence of control inputs.
 
+## Installation
+
+To install __cgpdm_lib__ on your system, clone the repository, open it in a terminal and run the following command:
+
+```
+pip install .
+```
+
+Instead if you want to install the package in "editable" or "develop" mode (to prevent the uninstall/install of the
+package at every package change) run the following command:
+
+```
+pip install -e .
+```
 
 ## Dependencies
 - [PyTorch] (https://pytorch.org/)
