@@ -28,7 +28,7 @@ pip install -e .
 
 ## Usage
 Open a terminal inside __test/__ folder
-- Run __$ python test_cgpdm.py__ to apply GPDM dimensionality reduction to state-input cloth movement data (stored inside folder __test/DATA/__).
+- Run __$ python test_cgpdm.py__ to apply CGPDM to cloth movement data (stored inside folder __test/DATA/__).
 
 __test_cgpdm.py__ take command line arguments:
 - __seed__: select the random seed
@@ -38,6 +38,7 @@ __test_cgpdm.py__ take command line arguments:
 - __num_opt_steps__: select the number of optimization steps
 - __lr__: select the optimization learning rate
 - __flg_show__: set to 'True' for showing model results
+
 
 ## Citing
 If you use this package, please cite the following paper: __Amadio et al. "Controlled Gaussian Process Dynamical Models with Application to Robotic Cloth Manipulation"__.
