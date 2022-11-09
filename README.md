@@ -13,8 +13,7 @@ To install __cgpdm_lib__ on your system, clone the repository, open it in a term
 pip install .
 ```
 
-Instead if you want to install the package in "editable" or "develop" mode (to prevent the uninstall/install of the
-package at every package change) run the following command:
+Instead if you want to install the package in *editable* mode run the following command:
 
 ```
 pip install -e .
@@ -27,10 +26,10 @@ pip install -e .
 - [Scikit-learn] (https://scikit-learn.org/stable/)
 
 ## Usage
-Open a terminal inside __test/__ folder
-- Run __$ python test_cgpdm.py__ to apply CGPDM to cloth movement data (stored inside folder __test/DATA/__).
+Open a terminal inside __example/__ folder
+- Run __$ python train_cgpdm.py__ to apply CGPDM to cloth movement data (stored inside folder __example/DATA/__).
 
-__test_cgpdm.py__ take command line arguments:
+__train_cgpdm.py__ take command line arguments:
 - __seed__: select the random seed
 - __num_data__: select the number of trajectories used for training
 - __deg__: select the oscillation angle used in data collection (5, 10 or 15)
@@ -41,4 +40,5 @@ __test_cgpdm.py__ take command line arguments:
 
 
 ## Citing
-If you use this package, please cite the following paper: __Amadio et al. "Controlled Gaussian Process Dynamical Models with Application to Robotic Cloth Manipulation"__.
+If you use this package, please cite the following paper:
+__Amadio et al. "Controlled Gaussian Process Dynamical Models with Application to Robotic Cloth Manipulation"__.
