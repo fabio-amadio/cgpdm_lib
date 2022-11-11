@@ -125,14 +125,11 @@ print("\nTotal Training Time: "+str(train_time)+" [s]")
 
 # save model
 save_folder = 'ROLLOUT/'
-model.save(folder = save_folder)
+config_dict_path = save_folder+'cgpdm_config_dict.pt'
+state_dict_path = save_folder+'cgpdm_state_dict.pt'
+model.save(config_dict_path, state_dict_path)
 np.savetxt(save_folder+'training_set.csv', np.array(training_set), delimiter=',')
 
-
-# Print model's state_dict
-print("Model's state_dict:")
-for param_tensor in model.state_dict():
-    print(param_tensor, "\t", model.state_dict()[param_tensor])
 
 # get latent states
 X_list = model.get_latent_sequences()
@@ -144,12 +141,16 @@ if flg_show:
     plt.plot(loss)
     plt.grid()
     plt.title('Loss')
+    plt.xlabel('Optimization steps')
     plt.show()
 
     # latent trajectories
     plt.figure()
+    plt.suptitle('Latent trajectories')
     for j in range(d):
         plt.subplot(d,1,j+1)
+        plt.xlabel('Time [s]')
+        plt.ylabel(r'$x_{'+str(j+1)+'}$')
         for i in range(len(X_list)):
             plt.plot(X_list[i][:,j])
         plt.grid()
@@ -190,11 +191,11 @@ if flg_show:
         ax.set_ylim3d([-1.5,1.5])
         ax.set_ylabel('Y')
         ax.set_zlim3d([-1.5, 1.5])
-        ax.set_ylabel('Z')
+        ax.set_zlabel('Z')
         ax.set_title('Test trajectory #'+str(i+1))
         scat_test = ax.plot(Ytest[0,:,0],Ytest[0,:,1],Ytest[0,:,2],'bo', ms = 2)[0]
         scat_hat = ax.plot(Yhat[0,:,0],Yhat[0,:,1],Yhat[0,:,2],'ro', ms = 2)[0]
-        plt.legend([r'$y$', r'$\hat{y}$'])
+        plt.legend([r'$\mathbf{y}$', r'$\hat{\mathbf{y}}$'])
 
         def plotter(k, scat_test, Ytest, scat_hat, Yhat):
             scat_test.set_data(np.array([Ytest[k,:,0],Ytest[k,:,1]]))

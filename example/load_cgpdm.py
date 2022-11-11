@@ -75,10 +75,12 @@ model.load(config_dict, state_dict)
 # get latent states
 X_list = model.get_latent_sequences()
 
-# plot latent trajectories
+# latent trajectories
 plt.figure()
+plt.suptitle('Latent trajectories')
 for j in range(d):
     plt.subplot(d,1,j+1)
+    plt.ylabel(r'$x_{'+str(j+1)+'}$')
     for i in range(len(X_list)):
         plt.plot(X_list[i][:,j])
     plt.grid()
@@ -107,11 +109,11 @@ for i in range(len(model.observations_list)):
     ax.set_ylim3d([-1.5,1.5])
     ax.set_ylabel('Y')
     ax.set_zlim3d([-1.5, 1.5])
-    ax.set_ylabel('Z')
+    ax.set_zlabel('Z')
     ax.set_title('Train trajectory #'+str(i+1))
     scat_test = ax.plot(Y_true[0,:,0],Y_true[0,:,1],Y_true[0,:,2],'bo', ms = 2)[0]
     scat_hat = ax.plot(Yhat[0,:,0],Yhat[0,:,1],Yhat[0,:,2],'ro', ms = 2)[0]
-    plt.legend([r'$y$', r'$\hat{y}$'])
+    plt.legend([r'$\mathbf{y}$', r'$\hat{\mathbf{y}}$'])
 
     def plotter(k, scat_test, Y_true, scat_hat, Yhat):
         scat_test.set_data(np.array([Y_true[k,:,0],Y_true[k,:,1]]))
