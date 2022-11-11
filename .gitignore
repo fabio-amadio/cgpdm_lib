@@ -1,5 +1,5 @@
-test/ROLLOUT/*
-!test/ROLLOUT/.gitkeep
+example/ROLLOUT/*
+!example/ROLLOUT/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

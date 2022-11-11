@@ -128,6 +128,12 @@ save_folder = 'ROLLOUT/'
 model.save(folder = save_folder)
 np.savetxt(save_folder+'training_set.csv', np.array(training_set), delimiter=',')
 
+
+# Print model's state_dict
+print("Model's state_dict:")
+for param_tensor in model.state_dict():
+    print(param_tensor, "\t", model.state_dict()[param_tensor])
+
 # get latent states
 X_list = model.get_latent_sequences()
 
@@ -185,6 +191,7 @@ if flg_show:
         ax.set_ylabel('Y')
         ax.set_zlim3d([-1.5, 1.5])
         ax.set_ylabel('Z')
+        ax.set_title('Test trajectory #'+str(i+1))
         scat_test = ax.plot(Ytest[0,:,0],Ytest[0,:,1],Ytest[0,:,2],'bo', ms = 2)[0]
         scat_hat = ax.plot(Yhat[0,:,0],Yhat[0,:,1],Yhat[0,:,2],'ro', ms = 2)[0]
         plt.legend([r'$y$', r'$\hat{y}$'])

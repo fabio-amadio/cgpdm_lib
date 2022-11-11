@@ -778,32 +778,6 @@ class GPDM(torch.nn.Module):
 
         return losses
 
-
-    def save(self, folder=''):
-        """
-        Save model
-
-        Parameters
-        ----------
-
-        folder : string (optional)
-            path of the desired save folder
-
-        """
-
-        print('\n### Save init data and model ###')
-        torch.save(self.state_dict(), folder+'gpdm.pt')
-        log_dict={}
-        log_dict['observations_list'] = self.observations_list
-        log_dict['dyn_target'] = self.dyn_target
-        log_dict['dyn_back_step'] = self.dyn_back_step
-        log_dict['D'] = self.D
-        log_dict['d'] = self.d
-        log_dict['sigma_n_num_X'] = self.sigma_n_num_X
-        log_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
-        pickle.dump(log_dict, open(folder+'gpdm_log_dict.pt', 'wb'))
-
-
     def get_latent_sequences(self):
         """
         Return the latent trajectories associated to each observation sequence recorded
@@ -908,8 +882,6 @@ class GPDM(torch.nn.Module):
         Xin, Xout, _ = self.get_Xin_Xout_matrices()
         
         Kx_star = self.get_x_kernel(Xin,Xstar,False)
-
-        
    
         # mean_Xout_pred = torch.chain_matmul(Xout.t(),self.Kx_inv,Kx_star).t()
         mean_Xout_pred = torch.linalg.multi_dot([Xout.t(),self.Kx_inv,Kx_star]).t()
@@ -1123,6 +1095,68 @@ class GPDM(torch.nn.Module):
 
             return mean_Y_pred, var_Y_pred, Y
 
+    def save(self, folder):
+        """
+        Save model
+
+        Parameters
+        ----------
+
+        folder : string
+            path of the desired save folder
+
+        """
+
+        print('\n### Save init data and model ###')
+        torch.save(self.state_dict(), folder+'gpdm_state_dict.pt')
+        config_dict={}
+        config_dict['observations_list'] = self.observations_list
+        config_dict['dyn_target'] = self.dyn_target
+        config_dict['dyn_back_step'] = self.dyn_back_step
+        config_dict['D'] = self.D
+        config_dict['d'] = self.d
+        config_dict['sigma_n_num_X'] = self.sigma_n_num_X
+        config_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
+        pickle.dump(config_dict, open(folder+'gpdm_config_dict.pt', 'wb'))
+
+
+    def load(self, config_dict, state_dict, flg_print = False):
+        """
+        Load (previously initialized) model
+
+        Parameters
+        ----------
+
+        config_dict : dict
+            configuration dictionary
+
+        config_dict : collections.OrderedDict
+            model state dictionary
+
+        flg_print : bool (optional)
+            flag to print loaded state_dict (default is False)
+        """
+
+        self.observations_list = config_dict['observations_list']
+        self.init_X()
+        self.load_state_dict(state_dict)
+
+        # save inverse kernel matrices after training
+        Ky = self.get_y_kernel(self.X,self.X)
+        U, info = torch.linalg.cholesky_ex(Ky, upper=True)
+        U_inv = torch.inverse(U)
+        self.Ky_inv = torch.matmul(U_inv,U_inv.t())
+        
+        Xin, Xout, _ = self.get_Xin_Xout_matrices()
+        Kx = self.get_x_kernel(Xin,Xin)
+        U, info = torch.linalg.cholesky_ex(Kx, upper=True)
+        U_inv = torch.inverse(U)
+        self.Kx_inv = torch.matmul(U_inv,U_inv.t())
+
+        if flg_print:
+            print("Loaded model's state_dict:")
+            for param_tensor in self.state_dict():
+                print(param_tensor, "\t", self.state_dict()[param_tensor])
 
 
 class CGPDM(GPDM):
@@ -1358,28 +1392,68 @@ class CGPDM(GPDM):
             return X_hat.detach().cpu().numpy(), Y_hat.detach().cpu().numpy()
 
 
-    def save(self, folder=''):
+    def save(self, folder):
         """
         Save model
 
         Parameters
         ----------
 
-        folder : string (optional)
+        folder : string
             path of the desired save folder
 
         """
 
         print('\n### Save init data and model ###')
-        torch.save(self.state_dict(), folder+'cgpdm.pt')
-        log_dict={}
-        log_dict['observations_list'] = self.observations_list
-        log_dict['controls_list'] = self.controls_list
-        log_dict['dyn_target'] = self.dyn_target
-        log_dict['dyn_back_step'] = self.dyn_back_step
-        log_dict['D'] = self.D
-        log_dict['d'] = self.d
-        log_dict['u_dim'] = self.u_dim
-        log_dict['sigma_n_num_X'] = self.sigma_n_num_X
-        log_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
-        pickle.dump(log_dict, open(folder+'cgpdm_log_dict.pt', 'wb'))
+        torch.save(self.state_dict(), folder+'cgpdm_state_dict.pt')
+        config_dict={}
+        config_dict['observations_list'] = self.observations_list
+        config_dict['controls_list'] = self.controls_list
+        config_dict['dyn_target'] = self.dyn_target
+        config_dict['dyn_back_step'] = self.dyn_back_step
+        config_dict['D'] = self.D
+        config_dict['d'] = self.d
+        config_dict['u_dim'] = self.u_dim
+        config_dict['sigma_n_num_X'] = self.sigma_n_num_X
+        config_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
+        pickle.dump(config_dict, open(folder+'cgpdm_config_dict.pt', 'wb'))
+
+
+    def load(self, config_dict, state_dict, flg_print = False):
+        """
+        Load (previously initialized) model
+
+        Parameters
+        ----------
+
+        config_dict : dict
+            configuration dictionary
+
+        config_dict : collections.OrderedDict
+            model state dictionary
+
+        flg_print : bool (optional)
+            flag to print loaded state_dict (default is False)
+        """
+
+        self.observations_list = config_dict['observations_list']
+        self.controls_list = config_dict['controls_list']
+        self.init_X()
+        self.load_state_dict(state_dict)
+
+        # save inverse kernel matrices after training
+        Ky = self.get_y_kernel(self.X,self.X)
+        U, info = torch.linalg.cholesky_ex(Ky, upper=True)
+        U_inv = torch.inverse(U)
+        self.Ky_inv = torch.matmul(U_inv,U_inv.t())
+        
+        Xin, Xout, _ = self.get_Xin_Xout_matrices()
+        Kx = self.get_x_kernel(Xin,Xin)
+        U, info = torch.linalg.cholesky_ex(Kx, upper=True)
+        U_inv = torch.inverse(U)
+        self.Kx_inv = torch.matmul(U_inv,U_inv.t())
+
+        if flg_print:
+            print("Loaded model's state_dict:")
+            for param_tensor in self.state_dict():
+                print(param_tensor, "\t", self.state_dict()[param_tensor])
