@@ -596,7 +596,6 @@ class GPDM(torch.nn.Module):
 
         loss = lossY + balance*lossX
 
-
         return loss
 
 
