@@ -26,19 +26,33 @@ pip install -e .
 - [Scikit-learn] (https://scikit-learn.org/stable/)
 
 ## Usage
-Open a terminal inside __example/__ folder
-- Run __$ python train_cgpdm.py__ to apply CGPDM to cloth movement data (stored inside folder __example/DATA/__).
+Open a terminal inside __example/__ folder.
+- Run __$ python train_cgpdm.py__ to train CGPDM on a cloth movement dataset (stored inside folder __example/DATA/__) and save the resulting model (inside __example/ROLLOUT/__ folder).
 
-__train_cgpdm.py__ take command line arguments:
-- __seed__: select the random seed
-- __num_data__: select the number of trajectories used for training
-- __deg__: select the oscillation angle used in data collection (5, 10 or 15)
-- __d__: select the latent space dimension
-- __num_opt_steps__: select the number of optimization steps
-- __lr__: select the optimization learning rate
-- __flg_show__: set to 'True' for showing model results
+  __train_cgpdm.py__ takes the following command line arguments:
+  - __seed__: select the random seed
+  - __num_data__: select the number of trajectories used for training
+  - __deg__: select the oscillation angle used in data collection (5, 10 or 15)
+  - __d__: select the latent space dimension
+  - __num_opt_steps__: select the number of optimization steps
+  - __lr__: select the optimization learning rate
+  - __flg_show__: set to 'True' for showing model results
 
+
+- Run __$ python load_cgpdm.py__ to load a trained CGPDM and show rollouts on training data.
+
+  __load_cgpdm.py__ takes the following command line argument:
+  - __model_name__: model label inside the __example/ROLLOUT/__ folder.
+
+(__train_gpdm.py__ and __load_gpdm.py__ scripts works analogously but applying the original GPDM on the same some cloth movement dataset)
 
 ## Citing
 If you use this package, please cite the following paper:
-__Amadio et al. "Controlled Gaussian Process Dynamical Models with Application to Robotic Cloth Manipulation"__.
+```
+@article{amadio2021controlled,
+  title={Controlled Gaussian Process Dynamical Models with Application to Robotic Cloth Manipulation},
+  author={Amadio, Fabio and Delgado-Guerrero, Juan Antonio and Colom{\'e}, Adri{\`a} and Torras, Carme},
+  journal={arXiv preprint arXiv:2103.06615},
+  year={2021}
+}
+```
