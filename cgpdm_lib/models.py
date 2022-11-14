@@ -68,7 +68,13 @@ class GPDM(torch.nn.Module):
         additional noise std for numerical issues in Y GP
 
     observations_list : list(double)
-        list of observation sequences   
+        list of observation sequences
+
+    Kx_inv : torch.Tensor
+        inverted dynamics map kernel matrix
+
+    Ky_inv : torch.Tensor
+        inverted latent map kernel matrix
 
     """
     def __init__(self, D, d, dyn_target, dyn_back_step,
@@ -1095,20 +1101,23 @@ class GPDM(torch.nn.Module):
 
             return mean_Y_pred, var_Y_pred, Y
 
-    def save(self, folder):
+    def save(self, config_dict_path, state_dict_path):
         """
-        Save model
+        Save model into two pickle objects
 
         Parameters
         ----------
 
-        folder : string
-            path of the desired save folder
+        config_dict_path : string
+            save path for the config_dict
+
+        state_dict_path : string
+            save path for the state_dict
 
         """
 
         print('\n### Save init data and model ###')
-        torch.save(self.state_dict(), folder+'gpdm_state_dict.pt')
+        torch.save(self.state_dict(), state_dict_path)
         config_dict={}
         config_dict['observations_list'] = self.observations_list
         config_dict['dyn_target'] = self.dyn_target
@@ -1117,7 +1126,7 @@ class GPDM(torch.nn.Module):
         config_dict['d'] = self.d
         config_dict['sigma_n_num_X'] = self.sigma_n_num_X
         config_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
-        pickle.dump(config_dict, open(folder+'gpdm_config_dict.pt', 'wb'))
+        pickle.dump(config_dict, open(config_dict_path, 'wb'))
 
 
     def load(self, config_dict, state_dict, flg_print = False):
@@ -1392,20 +1401,23 @@ class CGPDM(GPDM):
             return X_hat.detach().cpu().numpy(), Y_hat.detach().cpu().numpy()
 
 
-    def save(self, folder):
+    def save(self, config_dict_path, state_dict_path):
         """
-        Save model
+        Save model into two pickle objects
 
         Parameters
         ----------
 
-        folder : string
-            path of the desired save folder
+        config_dict_path : string
+            save path for the config_dict
+
+        state_dict_path : string
+            save path for the state_dict
 
         """
 
         print('\n### Save init data and model ###')
-        torch.save(self.state_dict(), folder+'cgpdm_state_dict.pt')
+        torch.save(self.state_dict(), state_dict_path)
         config_dict={}
         config_dict['observations_list'] = self.observations_list
         config_dict['controls_list'] = self.controls_list
@@ -1416,7 +1428,7 @@ class CGPDM(GPDM):
         config_dict['u_dim'] = self.u_dim
         config_dict['sigma_n_num_X'] = self.sigma_n_num_X
         config_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
-        pickle.dump(config_dict, open(folder+'cgpdm_config_dict.pt', 'wb'))
+        pickle.dump(config_dict, open(config_dict_path, 'wb'))
 
 
     def load(self, config_dict, state_dict, flg_print = False):
