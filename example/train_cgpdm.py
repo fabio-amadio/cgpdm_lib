@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+# Copyright 2022 by Fabio Amadio.
+# All rights reserved.
+# This file is part of the cgpdm_lib,
+# and is released under the "GNU General Public License".
+# Please see the LICENSE file included in the package.
+
 import torch
 import numpy as np
 import time
