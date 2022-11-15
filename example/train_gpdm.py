@@ -47,14 +47,14 @@ p.add_argument('-flg_show',
 # load parameters
 locals().update(vars(p.parse_known_args()[0]))
 
-print('\n### TRAIN GPDM:')
-print('### random seed: '+str(seed))
-print('### training trajectories: '+str(num_data))
-print('### oscillation angle: '+str(deg))
-print('### latent dimension: '+str(d))
-print('### num. opt. steps: '+str(num_opt_steps))
-print('### learning rate: '+str(lr))
-print('### show results: '+str(flg_show))
+print('\nTRAIN GPDM:')
+print(' - random seed: '+str(seed))
+print(' - training trajectories: '+str(num_data))
+print(' - oscillation angle: '+str(deg))
+print(' - latent dimension: '+str(d))
+print(' - num. opt. steps: '+str(num_opt_steps))
+print(' - learning rate: '+str(lr))
+print(' - show results: '+str(flg_show))
 
 # define torch device and data type
 dtype=torch.float64
@@ -62,7 +62,7 @@ device=torch.device('cpu')
 
 # load observation data
 folder = 'DATA/8x8_rng_swing_'+str(deg)+'_deg/'
-print('\n### DATA FOLDER: '+folder)
+print('\nDATA FOLDER: '+folder)
 
 Y_data = []
 for i in range(41):
@@ -106,7 +106,7 @@ X_list_pca = model.get_latent_sequences()
 
 # train model
 start_time = time.time()
-loss = model.train_lbfgs(num_opt_steps=26, num_print_steps=5, lr=0.01, balance=1)
+loss = model.train_lbfgs(num_opt_steps=26, num_print_steps=1, lr=0.01, balance=1)
 end_time = time.time()
 train_time = end_time - start_time
 print("\nTotal Training Time: "+str(train_time)+" [s]")

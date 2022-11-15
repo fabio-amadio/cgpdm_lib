@@ -46,14 +46,14 @@ p.add_argument('-flg_show',
 # load parameters
 locals().update(vars(p.parse_known_args()[0]))
 
-print('\n### TRAIN CGPDM:')
-print('### random seed: '+str(seed))
-print('### training trajectories: '+str(num_data))
-print('### oscillation angle: '+str(deg))
-print('### latent dimension: '+str(d))
-print('### num. opt. steps: '+str(num_opt_steps))
-print('### learning rate: '+str(lr))
-print('### show results: '+str(flg_show))
+print('\nTRAIN CGPDM:')
+print(' - random seed: '+str(seed))
+print(' - training trajectories: '+str(num_data))
+print(' - oscillation angle: '+str(deg))
+print(' - latent dimension: '+str(d))
+print(' - num. opt. steps: '+str(num_opt_steps))
+print(' - learning rate: '+str(lr))
+print(' - show results: '+str(flg_show))
 
 # define torch device and data type
 dtype=torch.float64
@@ -61,7 +61,7 @@ device=torch.device('cpu')
 
 # load observation data
 folder = 'DATA/8x8_rng_swing_'+str(deg)+'_deg/'
-print('\n### DATA FOLDER: '+folder)
+print('\nDATA FOLDER: '+folder)
 
 Y_data = []
 U_data = []

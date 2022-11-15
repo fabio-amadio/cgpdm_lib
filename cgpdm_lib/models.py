@@ -10,7 +10,7 @@ from sklearn.decomposition import PCA
 from torch.distributions.normal import Normal
 import pickle
 import sys
-import pdb
+from termcolor import colored, cprint
 
 
 class GPDM(torch.nn.Module):
@@ -683,7 +683,7 @@ class GPDM(torch.nn.Module):
             loss = self.gpdm_loss(Y, N, balance)
             loss.backward()
             if torch.isnan(loss):
-                print('Loss is nan')
+                cprint('Loss is nan', 'red')
                 break
 
             optimizer.step()
@@ -694,7 +694,7 @@ class GPDM(torch.nn.Module):
                 print('\nGPDM Opt. EPOCH:', epoch)
                 print('Running loss:', "{:.4e}".format(loss.item()))
                 t_stop = time.time()
-                print('Time elapsed:',t_stop-t_start)
+                print('Update time:',t_stop-t_start)
                 t_start = t_stop
 
         # save inverse kernel matrices after training
@@ -766,7 +766,7 @@ class GPDM(torch.nn.Module):
                 print('\nGPDM Opt. EPOCH:', epoch)
                 print('Running loss:', "{:.4e}".format(losses[-1]))
                 t_stop = time.time()
-                print('Time elapsed:',t_stop-t_start)
+                print('Update time:',t_stop-t_start)
                 t_start = t_stop
 
         # save inverse kernel matrices after training
@@ -1115,7 +1115,6 @@ class GPDM(torch.nn.Module):
 
         """
 
-        print('\n### Save init data and model ###')
         torch.save(self.state_dict(), state_dict_path)
         config_dict={}
         config_dict['observations_list'] = self.observations_list
@@ -1126,6 +1125,8 @@ class GPDM(torch.nn.Module):
         config_dict['sigma_n_num_X'] = self.sigma_n_num_X
         config_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
         pickle.dump(config_dict, open(config_dict_path, 'wb'))
+        cprint("\nGPDM config dict saved in "+config_dict_path, "green")
+        cprint("GPDM state dict saved in "+state_dict_path, "green")
 
 
     def load(self, config_dict, state_dict, flg_print = False):
@@ -1161,8 +1162,10 @@ class GPDM(torch.nn.Module):
         U_inv = torch.inverse(U)
         self.Kx_inv = torch.matmul(U_inv,U_inv.t())
 
+        cprint("\nGPDM correctly loaded", "green")
+
         if flg_print:
-            print("Loaded model's state_dict:")
+            print("Loaded params:")
             for param_tensor in self.state_dict():
                 print(param_tensor, "\t", self.state_dict()[param_tensor])
 
@@ -1415,7 +1418,6 @@ class CGPDM(GPDM):
 
         """
 
-        print('\n### Save init data and model ###')
         torch.save(self.state_dict(), state_dict_path)
         config_dict={}
         config_dict['observations_list'] = self.observations_list
@@ -1428,6 +1430,8 @@ class CGPDM(GPDM):
         config_dict['sigma_n_num_X'] = self.sigma_n_num_X
         config_dict['sigma_n_num_Y'] = self.sigma_n_num_Y
         pickle.dump(config_dict, open(config_dict_path, 'wb'))
+        cprint("\nCGPDM config dict saved in "+config_dict_path, "green")
+        cprint("CGPDM state dict saved in "+state_dict_path, "green")
 
 
     def load(self, config_dict, state_dict, flg_print = False):
@@ -1464,7 +1468,9 @@ class CGPDM(GPDM):
         U_inv = torch.inverse(U)
         self.Kx_inv = torch.matmul(U_inv,U_inv.t())
 
+        cprint("\nCGPDM correctly loaded", "green")
+
         if flg_print:
-            print("Loaded model's state_dict:")
+            print("Loaded params:")
             for param_tensor in self.state_dict():
                 print(param_tensor, "\t", self.state_dict()[param_tensor])

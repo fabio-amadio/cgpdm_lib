@@ -29,13 +29,10 @@ load_folder = 'ROLLOUT/'
 config_dict = pickle.load(open(load_folder+model_name+'_config_dict.pt', 'rb'))
 state_dict = torch.load(load_folder+model_name+'_state_dict.pt')
 
-print(type(config_dict))
-print(type(state_dict))
-
-print('\n### LOAD CGPDM:')
-print('### model name: '+model_name)
-print('### config_dict path: '+load_folder+model_name+'_config_dict.pt')
-print('### state_dict path: '+load_folder+model_name+'_state_dict.pt')
+print('\nLOAD CGPDM:')
+print(' - model name: '+model_name)
+print(' - config_dict path: '+load_folder+model_name+'_config_dict.pt')
+print(' - state_dict path: '+load_folder+model_name+'_state_dict.pt')
 
 # define torch device and data type
 dtype=torch.float64
