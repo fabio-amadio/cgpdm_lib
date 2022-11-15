@@ -1,6 +1,10 @@
-""" 
-Author: Fabio Amadio (fabioamadio93@gmail.com)
-"""
+#!/usr/bin/env python
+
+# Copyright 2022 by Fabio Amadio.
+# All rights reserved.
+# This file is part of the cgpdm_lib,
+# and is released under the "GNU General Public License".
+# Please see the LICENSE file included in the package.
 
 import torch
 import numpy as np
@@ -79,10 +83,13 @@ class GPDM(torch.nn.Module):
     """
     def __init__(self, D, d, dyn_target, dyn_back_step,
                  y_lambdas_init, y_lengthscales_init, y_sigma_n_init,
-                 x_lambdas_init, x_lengthscales_init, x_sigma_n_init, x_lin_coeff_init, 
-                 flg_train_y_lambdas=True, flg_train_y_lengthscales=True, flg_train_y_sigma_n=True,
-                 flg_train_x_lambdas=True, flg_train_x_lengthscales=True, flg_train_x_sigma_n=True, flg_train_x_lin_coeff=True,
-                 sigma_n_num_Y=0., sigma_n_num_X=0., dtype=torch.float64, device=torch.device('cpu')):
+                 x_lambdas_init, x_lengthscales_init, x_sigma_n_init,
+                 x_lin_coeff_init, flg_train_y_lambdas = True,
+                 flg_train_y_lengthscales = True, flg_train_y_sigma_n = True,
+                 flg_train_x_lambdas = True, flg_train_x_lengthscales = True,
+                 flg_train_x_sigma_n = True, flg_train_x_lin_coeff = True,
+                 sigma_n_num_Y = 0., sigma_n_num_X = 0.,
+                 dtype = torch.float64, device = torch.device('cpu')):
         """
         Parameters
         ----------
@@ -99,22 +106,22 @@ class GPDM(torch.nn.Module):
             memory of dynamic map function (1 or 2)
 
         y_lambdas_init : double
-            initial signal std parameter for GP Y (dimension: D)
+            initial signal std for GP Y (dimension: D)
 
         y_lengthscales_init : double
-            initial lengthscales parameter for GP Y (dimension: d)
+            initial lengthscales for GP Y (dimension: d)
 
         y_sigma_n_init : double
-            initial noise std parameter for GP Y (dimension: 1)
+            initial noise std for GP Y (dimension: 1)
         
         x_lambdas_init : double
-            initial signal std parameter for GP X (dimension: d)
+            initial signal std for GP X (dimension: d)
 
         x_lengthscales_init : double
-            initial lengthscales parameter for GP X (dimension: d*dyn_back_step)
+            initial lengthscales for GP X (dimension: d*dyn_back_step)
 
         x_sigma_n_init : double
-            initial noise std parameter for GP X (dimension: 1)
+            initial noise std for GP X (dimension: 1)
 
         x_lin_coeff_init : double
             initial linear coefficients for GP X (dimension: d*dyn_back_step+1)
@@ -169,35 +176,44 @@ class GPDM(torch.nn.Module):
         self.dyn_back_step = dyn_back_step
 
         # Set Y-kernel parameters
-        self.y_log_lengthscales = torch.nn.Parameter(torch.tensor(np.log(np.abs(y_lengthscales_init)),
-                                                                  dtype=self.dtype,
-                                                                  device=self.device),
-                                                                  requires_grad=flg_train_y_lengthscales)
-        self.y_log_lambdas = torch.nn.Parameter(torch.tensor(np.log(np.abs(y_lambdas_init)),
-                                                             dtype=self.dtype,
-                                                             device=self.device),
-                                                             requires_grad=flg_train_y_lambdas)
-        self.y_log_sigma_n = torch.nn.Parameter(torch.tensor(np.log(np.abs(y_sigma_n_init)),
-                                                             dtype=self.dtype,
-                                                             device=self.device),
-                                                             requires_grad=flg_train_y_sigma_n)
+        self.y_log_lengthscales = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(y_lengthscales_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_y_lengthscales)
+        self.y_log_lambdas = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(y_lambdas_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_y_lambdas)
+        self.y_log_sigma_n = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(y_sigma_n_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_y_sigma_n)
+
         # Set X-kernel parameters
-        self.x_log_lengthscales = torch.nn.Parameter(torch.tensor(np.log(np.abs(x_lengthscales_init)),
-                                                                  dtype=self.dtype,
-                                                                  device=self.device),
-                                                                  requires_grad=flg_train_x_lengthscales)
-        self.x_log_lambdas = torch.nn.Parameter(torch.tensor(np.log(np.abs(x_lambdas_init)),
-                                                             dtype=self.dtype,
-                                                             device=self.device),
-                                                             requires_grad=flg_train_x_lambdas)
-        self.x_log_sigma_n = torch.nn.Parameter(torch.tensor(np.log(np.abs(x_sigma_n_init)),
-                                                             dtype=self.dtype,
-                                                             device=self.device),
-                                                             requires_grad=flg_train_x_sigma_n)
-        self.x_log_lin_coeff = torch.nn.Parameter(torch.tensor(np.log(np.abs(x_lin_coeff_init)),
-                                                               dtype=self.dtype,
-                                                               device=self.device),
-                                                               requires_grad=flg_train_x_lin_coeff)
+        self.x_log_lengthscales = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(x_lengthscales_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_x_lengthscales)
+        self.x_log_lambdas = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(x_lambdas_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_x_lambdas)
+        self.x_log_sigma_n = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(x_sigma_n_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_x_sigma_n)
+        self.x_log_lin_coeff = torch.nn.Parameter(torch.tensor(
+            np.log(np.abs(x_lin_coeff_init)),
+            dtype = self.dtype,
+            device = self.device),
+            requires_grad = flg_train_x_lin_coeff)
+
         # additional noise variance for numerical issues
         self.sigma_n_num_Y = sigma_n_num_Y
         self.sigma_n_num_X = sigma_n_num_X
@@ -214,7 +230,7 @@ class GPDM(torch.nn.Module):
         for p in self.parameters():
             p.requires_grad = False
 
-    def set_training_mode(self, model='all'):
+    def set_training_mode(self, model = 'all'):
         """
         Set the model in training mode
         
@@ -246,7 +262,7 @@ class GPDM(torch.nn.Module):
             self.x_log_sigma_n.requires_grad = True
             self.x_log_lin_coeff.requires_grad = True
         else:
-            raise ValueError('model must be \'all\', \'latent\' or \'dynamics\'!')      
+            raise ValueError('model must be \'all\', \'latent\' or \'dynamics\'')      
 
     def add_data(self, Y):
         """
@@ -259,7 +275,7 @@ class GPDM(torch.nn.Module):
             observation data (dimension: N x D)
 
         """
-        if Y.shape[1]!=self.D:
+        if Y.shape[1] != self.D:
             raise ValueError('Y must be a N x D matrix collecting observation data!')
 
         self.observations_list.append(Y)
@@ -267,7 +283,7 @@ class GPDM(torch.nn.Module):
 
         print('Num. of sequences = '+str(self.num_sequences)+' [Data points = '+str(np.concatenate(self.observations_list, 0).shape[0])+']')
 
-    def get_y_kernel(self, X1, X2, flg_noise=True):
+    def get_y_kernel(self, X1, X2, flg_noise = True):
         """
         Compute the latent mapping kernel (GP Y)
         
@@ -290,7 +306,7 @@ class GPDM(torch.nn.Module):
         """
         return self.get_rbf_kernel(X1, X2, self.y_log_lengthscales, self.y_log_sigma_n, self.sigma_n_num_Y, flg_noise)
 
-    def get_x_kernel(self, X1, X2, flg_noise=True):
+    def get_x_kernel(self, X1, X2, flg_noise = True):
         """
         Compute the latent dynamic kernel (GP X)
 
@@ -314,9 +330,10 @@ class GPDM(torch.nn.Module):
         return self.get_rbf_kernel(X1, X2, self.x_log_lengthscales, self.x_log_sigma_n, self.sigma_n_num_X, flg_noise) + \
                self.get_lin_kernel(X1, X2, self.x_log_lin_coeff)   
 
-    def get_rbf_kernel(self, X1, X2, log_lengthscales_par, log_sigma_n_par, sigma_n_num=0, flg_noise=True):
+    def get_rbf_kernel(self, X1, X2, log_lengthscales_par, log_sigma_n_par,
+                       sigma_n_num = 0, flg_noise = True):
         """
-        Compute RBF kernel on X1, X2 points (without considering signal variance)
+        Compute RBF kernel on X1, X2 points (without signal variance)
 
         Parameters
         ----------
@@ -348,7 +365,8 @@ class GPDM(torch.nn.Module):
         if flg_noise:
             N = X1.shape[0]
             return torch.exp(-self.get_weighted_distances(X1, X2, log_lengthscales_par)) + \
-                torch.exp(log_sigma_n_par)**2*torch.eye(N, dtype=self.dtype, device=self.device) + sigma_n_num**2*torch.eye(N, dtype=self.dtype, device=self.device)
+                torch.exp(log_sigma_n_par)**2 * torch.eye(N, dtype = self.dtype, device = self.device) + \
+                sigma_n_num**2 * torch.eye(N, dtype = self.dtype, device = self.device)
 
         else:
             return torch.exp(-self.get_weighted_distances(X1, X2, log_lengthscales_par))
@@ -376,11 +394,12 @@ class GPDM(torch.nn.Module):
         """
         lengthscales = torch.exp(log_lengthscales_par)
 
-        X1_sliced = X1/lengthscales
-        X1_squared = torch.sum(X1_sliced.mul(X1_sliced), dim=1, keepdim=True)
-        X2_sliced = X2/lengthscales
-        X2_squared = torch.sum(X2_sliced.mul(X2_sliced), dim=1, keepdim=True)
-        dist = X1_squared + X2_squared.transpose(dim0=0, dim1=1) -2*torch.matmul(X1_sliced,X2_sliced.transpose(dim0=0, dim1=1))
+        X1_sliced = X1 / lengthscales
+        X1_squared = torch.sum(X1_sliced.mul(X1_sliced), dim = 1, keepdim = True)
+        X2_sliced = X2 / lengthscales
+        X2_squared = torch.sum(X2_sliced.mul(X2_sliced), dim = 1, keepdim = True)
+        dist = X1_squared + X2_squared.transpose(dim0 = 0, dim1 = 1) - \
+            2 * torch.matmul(X1_sliced,X2_sliced.transpose(dim0 = 0, dim1 = 1))
 
         return dist
 
@@ -407,8 +426,8 @@ class GPDM(torch.nn.Module):
 
         """
         Sigma = torch.diag(torch.exp(log_lin_coeff_par)**2)
-        X1 = torch.cat([X1,torch.ones(X1.shape[0],1, dtype=self.dtype, device=self.device)],1)
-        X2 = torch.cat([X2,torch.ones(X2.shape[0],1, dtype=self.dtype, device=self.device)],1)
+        X1 = torch.cat([X1,torch.ones(X1.shape[0], 1, dtype = self.dtype, device = self.device)], 1)
+        X2 = torch.cat([X2,torch.ones(X2.shape[0], 1, dtype = self.dtype, device = self.device)], 1)
         return torch.matmul(X1, torch.matmul(Sigma, X2.transpose(0,1)))
 
 
@@ -434,17 +453,18 @@ class GPDM(torch.nn.Module):
 
         """
         K_y = self.get_y_kernel(X,X)
-        U, info = torch.linalg.cholesky_ex(K_y, upper=True)
+        U, info = torch.linalg.cholesky_ex(K_y, upper = True)
         U_inv = torch.inverse(U)
         Ky_inv = torch.matmul(U_inv,U_inv.t())
-        log_det_K_y = 2*torch.sum(torch.log(torch.diag(U)))
+        log_det_K_y = 2 * torch.sum(torch.log(torch.diag(U)))
 
         W = torch.diag(torch.exp(self.y_log_lambdas))
         W2 = torch.diag(torch.exp(self.y_log_lambdas)**2)
-        log_det_W = 2*torch.sum(self.y_log_lambdas)
+        log_det_W = 2 * torch.sum(self.y_log_lambdas)
 
-        # return self.D/2*log_det_K_y+1/2*torch.trace(torch.chain_matmul(Ky_inv,Y,W2,Y.transpose(0,1)))-N*log_det_W
-        return self.D/2*log_det_K_y+1/2*torch.trace(torch.linalg.multi_dot([Ky_inv,Y,W2,Y.transpose(0,1)]))-N*log_det_W
+        return self.D / 2 * log_det_K_y + 1 / 2 * \
+            torch.trace(torch.linalg.multi_dot([Ky_inv, Y, W2, Y.transpose(0,1)])) \
+            - N * log_det_W
 
     def get_x_neg_log_likelihood(self, Xout, Xin, N):
         """
@@ -468,21 +488,22 @@ class GPDM(torch.nn.Module):
 
         """
         
-        K_x = self.get_x_kernel(Xin,Xin)
-        U, info = torch.linalg.cholesky_ex(K_x, upper=True)
+        K_x = self.get_x_kernel(Xin, Xin)
+        U, info = torch.linalg.cholesky_ex(K_x, upper = True)
         U_inv = torch.inverse(U)
-        Kx_inv = torch.matmul(U_inv,U_inv.t())
-        log_det_K_x = 2*torch.sum(torch.log(torch.diag(U)))
+        Kx_inv = torch.matmul(U_inv, U_inv.t())
+        log_det_K_x = 2 * torch.sum(torch.log(torch.diag(U)))
 
         W = torch.diag(torch.exp(self.x_log_lambdas))
         W2 = torch.diag(torch.exp(self.x_log_lambdas)**2)
-        log_det_W = 2*torch.sum(self.x_log_lambdas)
+        log_det_W = 2 * torch.sum(self.x_log_lambdas)
 
-        # return self.d/2*log_det_K_x+1/2*torch.trace(torch.chain_matmul(Kx_inv,Xout,W2,Xout.transpose(0,1)))-Xin.shape[0]*log_det_W
-        return self.d/2*log_det_K_x+1/2*torch.trace(torch.linalg.multi_dot([Kx_inv,Xout,W2,Xout.transpose(0,1)]))-Xin.shape[0]*log_det_W
+        return self.d / 2 * log_det_K_x + 1 / 2 * \
+            torch.trace(torch.linalg.multi_dot([Kx_inv, Xout, W2, Xout.transpose(0,1)])) \
+            - Xin.shape[0] * log_det_W
 
 
-    def get_Xin_Xout_matrices(self, X=None, target=None, back_step=None):
+    def get_Xin_Xout_matrices(self, X = None, target = None, back_step = None):
         """
         Compute GP input and output matrices (Xin, Xout) for GP X
 
@@ -507,11 +528,11 @@ class GPDM(torch.nn.Module):
         start_indeces : list of sequences' start indeces
 
         """
-        if X==None:
+        if X == None:
             X = self.X
-        if target==None:
+        if target == None:
             target = self.dyn_target
-        if back_step==None:
+        if back_step == None:
             back_step = self.dyn_back_step
 
         X_list = []
@@ -519,9 +540,9 @@ class GPDM(torch.nn.Module):
         start_indeces = []
         for j in range(len(self.observations_list)):
             sequence_length = self.observations_list[j].shape[0]
-            X_list.append(X[x_start_index:x_start_index+sequence_length,:])
+            X_list.append(X[x_start_index:x_start_index + sequence_length,:])
             start_indeces.append(x_start_index)
-            x_start_index = x_start_index+sequence_length           
+            x_start_index = x_start_index + sequence_length           
 
         if target == 'full' and back_step == 1:
             # in: x(t)
@@ -529,16 +550,16 @@ class GPDM(torch.nn.Module):
             # out: x(t+1)
             Xout = X_list[0][1:,:]
             for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, X_list[j][0:-1,:]),0)
-                Xout = torch.cat((Xout, X_list[j][1:,:]),0)
+                Xin = torch.cat((Xin, X_list[j][0:-1,:]), 0)
+                Xout = torch.cat((Xout, X_list[j][1:,:]), 0)
 
         elif target == 'full' and back_step == 2:
             # in: [x(t), x(t-1)]
             Xin = torch.cat((X_list[0][1:-1,:],X_list[0][0:-2,:]), 1)
             # out: x(t+1)
             Xout = X_list[0][2:,:]
-            for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, torch.cat((X_list[j][1:-1,:],X_list[j][0:-2,:]), 1)),0)
+            for j in range(1, len(self.observations_list)):
+                Xin = torch.cat((Xin, torch.cat((X_list[j][1:-1,:],X_list[j][0:-2,:]), 1)), 0)
                 Xout = torch.cat((Xout, X_list[j][2:,:]),0)
 
         elif target == 'delta' and back_step == 1:
@@ -546,9 +567,9 @@ class GPDM(torch.nn.Module):
             Xin = X_list[0][0:-1,:]
             # out: x(t+1)-x(t)
             Xout = X_list[0][1:,:] - X_list[0][0:-1,:]
-            for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, X_list[j][0:-1,:]),0)
-                Xout = torch.cat((Xout, X_list[j][1:,:] - X_list[j][0:-1,:]),0)
+            for j in range(1, len(self.observations_list)):
+                Xin = torch.cat((Xin, X_list[j][0:-1,:]), 0)
+                Xout = torch.cat((Xout, X_list[j][1:,:] - X_list[j][0:-1,:]), 0)
 
         elif target == 'delta' and back_step == 2:
             # in: [x(t), x(t-1)]
@@ -556,8 +577,8 @@ class GPDM(torch.nn.Module):
             # out: x(t+1)-x(t)
             Xout = X_list[0][2:,:] - X_list[0][1:-1,:]
             for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, torch.cat((X_list[j][1:-1,:],X_list[j][0:-2,:]), 1)),0)
-                Xout = torch.cat((Xout, X_list[j][2:,:] - X_list[j][1:-1,:]),0)
+                Xin = torch.cat((Xin, torch.cat((X_list[j][1:-1,:],X_list[j][0:-2,:]), 1)), 0)
+                Xout = torch.cat((Xout, X_list[j][2:,:] - X_list[j][1:-1,:]), 0)
         
         else:
             raise ValueError('target must be either \'full\' or \'delta\' \n back_step must be either 1 or 2')
@@ -604,23 +625,24 @@ class GPDM(torch.nn.Module):
         Initalize latent variables matrix with PCA
         """
         Y = self.get_Y()
-        pca = PCA(n_components=self.d)
+        pca = PCA(n_components = self.d)
         X0 = pca.fit_transform(Y)
 
         # set latent variables as parameters
-        self.X = torch.nn.Parameter(torch.tensor(X0, dtype=self.dtype, device=self.device), requires_grad=True)
+        self.X = torch.nn.Parameter(torch.tensor(X0, dtype = self.dtype, 
+                            device=  self.device), requires_grad=True)
 
         # init inverse kernel matrices
-        Ky = self.get_y_kernel(self.X,self.X)
-        U, info = torch.linalg.cholesky_ex(Ky, upper=True)
+        Ky = self.get_y_kernel(self.X, self.X)
+        U, info = torch.linalg.cholesky_ex(Ky, upper = True)
         U_inv = torch.inverse(U)
-        self.Ky_inv = torch.matmul(U_inv,U_inv.t())
+        self.Ky_inv = torch.matmul(U_inv, U_inv.t())
         
         Xin, Xout, _ = self.get_Xin_Xout_matrices()
-        Kx = self.get_x_kernel(Xin,Xin)
-        U, info = torch.linalg.cholesky_ex(Kx, upper=True)
+        Kx = self.get_x_kernel(Xin, Xin)
+        U, info = torch.linalg.cholesky_ex(Kx, upper = True)
         U_inv = torch.inverse(U)
-        self.Kx_inv = torch.matmul(U_inv,U_inv.t())
+        self.Kx_inv = torch.matmul(U_inv, U_inv.t())
 
     def get_Y(self):
         """
@@ -635,10 +657,11 @@ class GPDM(torch.nn.Module):
         observation = np.concatenate(self.observations_list, 0)
         # self.meanY = np.mean(observation,0)
         self.meanY = 0
-        Y = observation-self.meanY
+        Y = observation - self.meanY
         return Y
 
-    def train_adam(self, num_opt_steps, num_print_steps, lr=0.01, balance=1):
+    def train_adam(self, num_opt_steps, num_print_steps,
+                   lr = 0.01, balance = 1):
         """
         Optimize model with Adam
 
@@ -668,12 +691,12 @@ class GPDM(torch.nn.Module):
         # create observation matrix
         Y = self.get_Y()
         N = Y.shape[0]
-        Y = torch.tensor(Y, dtype=self.dtype, device=self.device)
+        Y = torch.tensor(Y, dtype = self.dtype, device = self.device)
 
         self.set_training_mode('all')
 
         # define optimizer
-        f_optim = lambda p : torch.optim.Adam(p, lr=lr)
+        f_optim = lambda p : torch.optim.Adam(p, lr = lr)
         optimizer = f_optim(self.parameters())
 
         t_start = time.time()
@@ -694,24 +717,25 @@ class GPDM(torch.nn.Module):
                 print('\nGPDM Opt. EPOCH:', epoch)
                 print('Running loss:', "{:.4e}".format(loss.item()))
                 t_stop = time.time()
-                print('Update time:',t_stop-t_start)
+                print('Update time:',t_stop - t_start)
                 t_start = t_stop
 
         # save inverse kernel matrices after training
-        Ky = self.get_y_kernel(self.X,self.X)
+        Ky = self.get_y_kernel(self.X, self.X)
         U, info = torch.linalg.cholesky_ex(Ky, upper=True)
         U_inv = torch.inverse(U)
-        self.Ky_inv = torch.matmul(U_inv,U_inv.t())
+        self.Ky_inv = torch.matmul(U_inv, U_inv.t())
         
         Xin, Xout, _ = self.get_Xin_Xout_matrices()
-        Kx = self.get_x_kernel(Xin,Xin)
+        Kx = self.get_x_kernel(Xin, Xin)
         U, info = torch.linalg.cholesky_ex(Kx, upper=True)
         U_inv = torch.inverse(U)
-        self.Kx_inv = torch.matmul(U_inv,U_inv.t())
+        self.Kx_inv = torch.matmul(U_inv, U_inv.t())
 
         return losses
 
-    def train_lbfgs(self, num_opt_steps, num_print_steps, lr=0.01, balance=1):
+    def train_lbfgs(self, num_opt_steps, num_print_steps,
+                    lr = 0.01, balance = 1):
         """
         Optimize model with L-BFGS
 
@@ -741,10 +765,13 @@ class GPDM(torch.nn.Module):
         # create observation matrix
         Y = self.get_Y()
         N = Y.shape[0]
-        Y = torch.tensor(Y, dtype=self.dtype, device=self.device)
+        Y = torch.tensor(Y, dtype = self.dtype, device = self.device)
         
         # define optimizer
-        f_optim = lambda p : torch.optim.LBFGS(p, lr=lr, max_iter=20, history_size=7, line_search_fn='strong_wolfe')
+        f_optim = lambda p : torch.optim.LBFGS(p, lr = lr,
+                                               max_iter = 20,
+                                               history_size = 7,
+                                               line_search_fn = 'strong_wolfe')
         optimizer = f_optim(self.parameters())
         losses = []
         t_start = time.time()
@@ -766,20 +793,20 @@ class GPDM(torch.nn.Module):
                 print('\nGPDM Opt. EPOCH:', epoch)
                 print('Running loss:', "{:.4e}".format(losses[-1]))
                 t_stop = time.time()
-                print('Update time:',t_stop-t_start)
+                print('Update time:',t_stop - t_start)
                 t_start = t_stop
 
         # save inverse kernel matrices after training
-        Ky = self.get_y_kernel(self.X,self.X)
+        Ky = self.get_y_kernel(self.X, self.X)
         U, info = torch.linalg.cholesky_ex(Ky, upper=True)
         U_inv = torch.inverse(U)
-        self.Ky_inv = torch.matmul(U_inv,U_inv.t())
+        self.Ky_inv = torch.matmul(U_inv, U_inv.t())
         
         Xin, Xout, _ = self.get_Xin_Xout_matrices()
-        Kx = self.get_x_kernel(Xin,Xin)
+        Kx = self.get_x_kernel(Xin, Xin)
         U, info = torch.linalg.cholesky_ex(Kx, upper=True)
         U_inv = torch.inverse(U)
-        self.Kx_inv = torch.matmul(U_inv,U_inv.t())
+        self.Kx_inv = torch.matmul(U_inv, U_inv.t())
 
         return losses
 
@@ -797,12 +824,12 @@ class GPDM(torch.nn.Module):
         x_start_index = 0
         for j in range(len(self.observations_list)):
             sequence_length = self.observations_list[j].shape[0]
-            X_list.append(X_np[x_start_index:x_start_index+sequence_length,:])
-            x_start_index = x_start_index+sequence_length
+            X_list.append(X_np[x_start_index:x_start_index + sequence_length,:])
+            x_start_index = x_start_index + sequence_length
 
         return X_list
 
-    def map_x_to_y(self, Xstar, flg_noise=False):
+    def map_x_to_y(self, Xstar, flg_noise = False):
         """
         Map Xstar to observation space: return mean and variance
         
@@ -826,19 +853,19 @@ class GPDM(torch.nn.Module):
         """
 
         Y_obs = self.get_Y()
-        Y_obs = torch.tensor(Y_obs, dtype=self.dtype, device=self.device)
+        Y_obs = torch.tensor(Y_obs, dtype = self.dtype, device = self.device)
 
-        Ky_star = self.get_y_kernel(self.X,Xstar,False)
+        Ky_star = self.get_y_kernel(self.X, Xstar,False)
 
-        # mean_Y_pred = torch.chain_matmul(Y_obs.t(),self.Ky_inv,Ky_star).t()
-        mean_Y_pred = torch.linalg.multi_dot([Y_obs.t(),self.Ky_inv,Ky_star]).t()
-        diag_var_Y_pred_common = self.get_y_diag_kernel(Xstar, flg_noise) - torch.sum(torch.matmul(Ky_star.t(),self.Ky_inv)*Ky_star.t(),dim=1)
+        mean_Y_pred = torch.linalg.multi_dot([Y_obs.t(), self.Ky_inv,Ky_star]).t()
+        diag_var_Y_pred_common = self.get_y_diag_kernel(Xstar, flg_noise) - \
+            torch.sum(torch.matmul(Ky_star.t(), self.Ky_inv) * Ky_star.t(), dim = 1)
         y_log_lambdas = torch.exp(self.y_log_lambdas)**-2
-        diag_var_Y_pred = diag_var_Y_pred_common.unsqueeze(1)*y_log_lambdas.unsqueeze(0)
+        diag_var_Y_pred = diag_var_Y_pred_common.unsqueeze(1) * y_log_lambdas.unsqueeze(0)
 
-        return mean_Y_pred + torch.tensor(self.meanY, dtype=self.dtype, device=self.device), diag_var_Y_pred
+        return mean_Y_pred + torch.tensor(self.meanY, dtype = self.dtype, device = self.device), diag_var_Y_pred
 
-    def get_y_diag_kernel(self, X, flg_noise=False):
+    def get_y_diag_kernel(self, X, flg_noise = False):
         """
         Compute only the diagonal of the latent mapping kernel GP Y
 
@@ -859,11 +886,11 @@ class GPDM(torch.nn.Module):
 
         n = X.shape[0]
         if flg_noise:
-            return torch.ones(n, dtype=self.dtype, device=self.device) + torch.exp(self.y_log_sigma_n)**2 + self.sigma_n_num_Y**2
+            return torch.ones(n, dtype = self.dtype, device = self.device) + torch.exp(self.y_log_sigma_n)**2 + self.sigma_n_num_Y**2
         else:
-            return torch.ones(n, dtype=self.dtype, device=self.device)
+            return torch.ones(n, dtype = self.dtype, device = self.device)
 
-    def map_x_dynamics(self, Xstar, flg_noise=False):
+    def map_x_dynamics(self, Xstar, flg_noise = False):
         """
         Map Xstar to GP dynamics output
 
@@ -886,17 +913,17 @@ class GPDM(torch.nn.Module):
         """
         Xin, Xout, _ = self.get_Xin_Xout_matrices()
         
-        Kx_star = self.get_x_kernel(Xin,Xstar,False)
+        Kx_star = self.get_x_kernel(Xin, Xstar,False)
    
-        # mean_Xout_pred = torch.chain_matmul(Xout.t(),self.Kx_inv,Kx_star).t()
-        mean_Xout_pred = torch.linalg.multi_dot([Xout.t(),self.Kx_inv,Kx_star]).t()
-        diag_var_Xout_pred_common = self.get_x_diag_kernel(Xstar, flg_noise) - torch.sum(torch.matmul(Kx_star.t(),self.Kx_inv)*Kx_star.t(),dim=1)
+        mean_Xout_pred = torch.linalg.multi_dot([Xout.t(), self.Kx_inv, Kx_star]).t()
+        diag_var_Xout_pred_common = self.get_x_diag_kernel(Xstar, flg_noise) - \
+            torch.sum(torch.matmul(Kx_star.t(), self.Kx_inv) * Kx_star.t(), dim = 1)
         x_log_lambdas = torch.exp(self.x_log_lambdas)**-2
-        diag_var_Xout_pred = diag_var_Xout_pred_common.unsqueeze(1)*x_log_lambdas.unsqueeze(0)
+        diag_var_Xout_pred = diag_var_Xout_pred_common.unsqueeze(1) * x_log_lambdas.unsqueeze(0)
 
         return mean_Xout_pred, diag_var_Xout_pred
 
-    def get_x_diag_kernel(self, X, flg_noise=False):
+    def get_x_diag_kernel(self, X, flg_noise = False):
         """
         Compute only the diagonal of the dynamics mapping kernel GP Y
 
@@ -917,15 +944,16 @@ class GPDM(torch.nn.Module):
 
         n = X.shape[0]
         Sigma = torch.diag(torch.exp(self.x_log_lin_coeff)**2)
-        X = torch.cat([X,torch.ones(X.shape[0],1, dtype=self.dtype, device=self.device)],1)
+        X = torch.cat([X,torch.ones(X.shape[0],1, dtype = self.dtype, device = self.device)],1)
         if flg_noise:
-            return torch.ones(n, dtype=self.dtype, device=self.device) + torch.exp(self.x_log_sigma_n)**2 + self.sigma_n_num_X**2 +\
-                   torch.sum(torch.matmul(X, Sigma)*(X), dim=1)
+            return torch.ones(n, dtype = self.dtype, device = self.device) +\
+                   torch.exp(self.x_log_sigma_n)**2 + self.sigma_n_num_X**2 +\
+                   torch.sum(torch.matmul(X, Sigma)*(X), dim = 1)
         else:
-            return torch.ones(n, dtype=self.dtype, device=self.device) + \
+            return torch.ones(n, dtype = self.dtype, device = self.device) + \
                    torch.sum(torch.matmul(X, Sigma)*(X), dim=1)
 
-    def get_next_x(self, gp_mean_out, gp_out_var, Xold, flg_sample=False):
+    def get_next_x(self, gp_mean_out, gp_out_var, Xold, flg_sample = False):
         """
         Predict GP X dynamics output to next latent state
 
@@ -964,7 +992,8 @@ class GPDM(torch.nn.Module):
             else:
                 return Xold + gp_mean_out
 
-    def rollout(self, num_steps, X0, X1=None, flg_sample_X=False, flg_sample_Y=False, flg_noise=False):
+    def rollout(self, num_steps, X0, X1 = None,
+                flg_sample_X = False, flg_sample_Y = False, flg_noise = False):
         """
         Generate a rollout of length 'num_step'. Return latent and observation trajectories
         
@@ -998,15 +1027,18 @@ class GPDM(torch.nn.Module):
         """
 
         with torch.no_grad():
-            X_hat = torch.zeros((num_steps, self.d), dtype=self.dtype, device=self.device)
+            X_hat = torch.zeros((num_steps, self.d), dtype = self.dtype,
+                                                     device = self.device)
             if X1 is None:
                 X1 = X0
 
             # init latent variables
-            X_hat[0,:] = torch.tensor(X0, dtype=self.dtype, device=self.device)
+            X_hat[0,:] = torch.tensor(X0, dtype = self.dtype,
+                                          device = self.device)
             t_start = 0
             if self.dyn_back_step == 2:
-                X_hat[1,:] = torch.tensor(X1, dtype=self.dtype, device=self.device)
+                X_hat[1,:] = torch.tensor(X1, dtype = self.dtype,
+                                              device = self.device)
                 t_start = 1
 
             # generate latent rollout
@@ -1014,9 +1046,12 @@ class GPDM(torch.nn.Module):
                 if self.dyn_back_step == 1:
                     Xin = X_hat[t:t+1,:]
                 if self.dyn_back_step == 2:
-                    Xin = torch.cat((X_hat[t:t+1,:],X_hat[t-1:t,:]),1)
+                    Xin = torch.cat((X_hat[t:t+1,:], X_hat[t-1:t,:]), 1)
                 mean_Xout_pred, var_Xout_pred = self.map_x_dynamics(Xin, flg_noise)
-                X_hat[t+1:t+2,:] = self.get_next_x(mean_Xout_pred, var_Xout_pred, X_hat[t:t+1,:], flg_sample=flg_sample_X)
+                X_hat[t+1:t+2,:] = self.get_next_x(mean_Xout_pred,
+                                                   var_Xout_pred,
+                                                   X_hat[t:t+1,:],
+                                                   flg_sample = flg_sample_X)
 
             # map to observation space
             mean_Y_pred, var_Y_pred = self.map_x_to_y(X_hat, flg_noise)
@@ -1030,7 +1065,7 @@ class GPDM(torch.nn.Module):
             return X_hat.detach().cpu().numpy(), Y_hat.detach().cpu().numpy()
 
 
-    def get_dynamics_map_performance(self, flg_noise=False):
+    def get_dynamics_map_performance(self, flg_noise = False):
         """
         Measure accuracy in latent dynamics prediction
 
@@ -1057,7 +1092,8 @@ class GPDM(torch.nn.Module):
 
         with torch.no_grad():
             Xin, Xout, _ = self.get_Xin_Xout_matrices()
-            mean_Xout_pred, var_Xout_pred = self.map_x_dynamics(Xin,flg_noise=flg_noise)
+            mean_Xout_pred, var_Xout_pred = self.map_x_dynamics(Xin,
+                                                        flg_noise = flg_noise)
 
             mean_Xout_pred = mean_Xout_pred.clone().detach().cpu().numpy()
             var_Xout_pred = var_Xout_pred.clone().detach().cpu().numpy()
@@ -1067,7 +1103,7 @@ class GPDM(torch.nn.Module):
         return mean_Xout_pred, var_Xout_pred, Xout, Xin
 
 
-    def get_latent_map_performance(self, flg_noise=False):
+    def get_latent_map_performance(self, flg_noise = False):
         """
         Measure accuracy of latent mapping
 
@@ -1091,7 +1127,8 @@ class GPDM(torch.nn.Module):
         """
 
         with torch.no_grad():
-            mean_Y_pred, var_Y_pred = self.map_x_to_y(self.X, flg_noise=flg_noise)
+            mean_Y_pred, var_Y_pred = self.map_x_to_y(self.X,
+                                                      flg_noise = flg_noise)
 
             mean_Y_pred = mean_Y_pred.clone().detach().cpu().numpy()
             var_Y_pred = var_Y_pred.clone().detach().cpu().numpy()
@@ -1183,10 +1220,13 @@ class CGPDM(GPDM):
     """
     def __init__(self, D, d, u_dim, dyn_target, dyn_back_step,
                  y_lambdas_init, y_lengthscales_init, y_sigma_n_init,
-                 x_lambdas_init, x_lengthscales_init, x_sigma_n_init, x_lin_coeff_init,
-                 flg_train_y_lambdas=True, flg_train_y_lengthscales=True, flg_train_y_sigma_n=True,
-                 flg_train_x_lambdas=True, flg_train_x_lengthscales=True, flg_train_x_sigma_n=True, flg_train_x_lin_coeff=True,
-                 sigma_n_num_Y=0., sigma_n_num_X=0., dtype=torch.float64, device=torch.device('cpu')):
+                 x_lambdas_init, x_lengthscales_init, x_sigma_n_init,
+                 x_lin_coeff_init, flg_train_y_lambdas = True,
+                 flg_train_y_lengthscales = True, flg_train_y_sigma_n = True,
+                 flg_train_x_lambdas = True, flg_train_x_lengthscales = True,
+                 flg_train_x_sigma_n = True, flg_train_x_lin_coeff = True,
+                 sigma_n_num_Y = 0., sigma_n_num_X = 0.,
+                 dtype = torch.float64, device = torch.device('cpu')):
         """
         Additional Parameters
         ---------------------
@@ -1198,13 +1238,25 @@ class CGPDM(GPDM):
             list of observed control actions
 
         """
-        super(CGPDM,self).__init__(D=D, d=d, dyn_target=dyn_target, dyn_back_step=dyn_back_step,
-                 y_lambdas_init=y_lambdas_init, y_lengthscales_init=y_lengthscales_init, y_sigma_n_init=y_sigma_n_init,
-                 x_lambdas_init=x_lambdas_init, x_lengthscales_init=x_lengthscales_init, x_sigma_n_init=x_sigma_n_init, x_lin_coeff_init=x_lin_coeff_init,
-                 flg_train_y_lambdas=flg_train_y_lambdas, flg_train_y_lengthscales=flg_train_y_lengthscales, flg_train_y_sigma_n=flg_train_y_sigma_n,
-                 flg_train_x_lambdas=flg_train_x_lambdas, flg_train_x_lengthscales=flg_train_x_lengthscales,
-                 flg_train_x_sigma_n=flg_train_x_sigma_n, flg_train_x_lin_coeff=flg_train_x_lin_coeff,
-                 sigma_n_num_Y=sigma_n_num_Y, sigma_n_num_X=sigma_n_num_X, dtype=dtype, device=device)
+        super(CGPDM,self).__init__(D = D, d = d,
+                 dyn_target = dyn_target,
+                 dyn_back_step = dyn_back_step,
+                 y_lambdas_init = y_lambdas_init,
+                 y_lengthscales_init = y_lengthscales_init,
+                 y_sigma_n_init = y_sigma_n_init,
+                 x_lambdas_init = x_lambdas_init,
+                 x_lengthscales_init = x_lengthscales_init,
+                 x_sigma_n_init = x_sigma_n_init,
+                 x_lin_coeff_init = x_lin_coeff_init,
+                 flg_train_y_lambdas = flg_train_y_lambdas,
+                 flg_train_y_lengthscales = flg_train_y_lengthscales,
+                 flg_train_y_sigma_n = flg_train_y_sigma_n,
+                 flg_train_x_lambdas = flg_train_x_lambdas,
+                 flg_train_x_lengthscales = flg_train_x_lengthscales,
+                 flg_train_x_sigma_n = flg_train_x_sigma_n,
+                 flg_train_x_lin_coeff = flg_train_x_lin_coeff,
+                 sigma_n_num_Y = sigma_n_num_Y, sigma_n_num_X = sigma_n_num_X,
+                 dtype = dtype, device = device)
 
         # control input dimension
         self.u_dim = u_dim
@@ -1226,11 +1278,11 @@ class CGPDM(GPDM):
             observation data (dimension: N x u_dim)
 
         """
-        if Y.shape[1]!=self.D:
+        if Y.shape[1] != self.D:
             raise ValueError('Y must be a N x D matrix collecting observation data!')
-        if U.shape[1]!=self.u_dim:
+        if U.shape[1] != self.u_dim:
             raise ValueError('U must be a N x u_dim matrix collecting observation data!')
-        if U.shape[0]!=Y.shape[0]:
+        if U.shape[0] != Y.shape[0]:
             raise ValueError('Y and U must have the same number N of data!')
 
         self.observations_list.append(Y)
@@ -1240,7 +1292,7 @@ class CGPDM(GPDM):
 
         print('Num. of sequences = '+str(self.num_sequences)+' [Total data points = '+str(np.concatenate(self.observations_list, 0).shape[0])+']')
 
-    def get_Xin_Xout_matrices(self, U=None, X=None, target=None, back_step=None):
+    def get_Xin_Xout_matrices(self, U = None, X = None, target = None, back_step = None):
         """
         Compute GP input and output matrices (Xin, Xout) for GP X
 
@@ -1269,13 +1321,13 @@ class CGPDM(GPDM):
 
         """
 
-        if X==None:
+        if X == None:
             X = self.X
-        if U==None:
+        if U == None:
             U = self.controls_list
-        if target==None:
+        if target == None:
             target = self.dyn_target
-        if back_step==None:
+        if back_step == None:
             back_step = self.dyn_back_step
 
         X_list = []
@@ -1284,23 +1336,23 @@ class CGPDM(GPDM):
         start_indeces = []
         for j in range(len(self.observations_list)):
             sequence_length = self.observations_list[j].shape[0]
-            X_list.append(X[x_start_index:x_start_index+sequence_length,:])
-            U_list.append(torch.tensor(U[j], dtype=self.dtype, device=self.device))
+            X_list.append(X[x_start_index:x_start_index + sequence_length,:])
+            U_list.append(torch.tensor(U[j], dtype = self.dtype, device = self.device))
             start_indeces.append(x_start_index)
-            x_start_index = x_start_index+sequence_length           
+            x_start_index = x_start_index + sequence_length           
 
         if target == 'full' and back_step == 1:
             # in: x(t)
-            Xin = torch.cat((X_list[0][0:-1,:],U_list[0][0:-1,:]), 1)
+            Xin = torch.cat((X_list[0][0:-1,:], U_list[0][0:-1,:]), 1)
             # out: x(t+1)
             Xout = X_list[0][1:,:]
             for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, torch.cat((X_list[j][0:-1,:],U_list[j][0:-1,:]), 1)),0)
-                Xout = torch.cat((Xout, X_list[j][1:,:]),0)
+                Xin = torch.cat((Xin, torch.cat((X_list[j][0:-1,:], U_list[j][0:-1,:]), 1)), 0)
+                Xout = torch.cat((Xout, X_list[j][1:,:]), 0)
 
         elif target == 'full' and back_step == 2:
             # in: [x(t), x(t-1)]
-            Xin = torch.cat((X_list[0][1:-1,:],X_list[0][0:-2,:],U_list[0][1:-1,:],U_list[0][0:-2,:]), 1)
+            Xin = torch.cat((X_list[0][1:-1,:], X_list[0][0:-2,:], U_list[0][1:-1,:], U_list[0][0:-2,:]), 1)
             # out: x(t+1)
             Xout = X_list[0][2:,:]
             for j in range(1,len(self.observations_list)):
@@ -1313,8 +1365,8 @@ class CGPDM(GPDM):
             # out: x(t+1)-x(t)
             Xout = X_list[0][1:,:] - X_list[0][0:-1,:]
             for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, torch.cat((X_list[j][0:-1,:],U_list[j][0:-1,:]), 1)),0)
-                Xout = torch.cat((Xout, X_list[j][1:,:] - X_list[j][0:-1,:]),0)
+                Xin = torch.cat((Xin, torch.cat((X_list[j][0:-1,:], U_list[j][0:-1,:]), 1)), 0)
+                Xout = torch.cat((Xout, X_list[j][1:,:] - X_list[j][0:-1,:]), 0)
 
         elif target == 'delta' and back_step == 2:
             # in: [x(t), x(t-1)]
@@ -1322,8 +1374,8 @@ class CGPDM(GPDM):
             # out: x(t+1)-x(t)
             Xout = X_list[0][2:,:] - X_list[0][1:-1,:]
             for j in range(1,len(self.observations_list)):
-                Xin = torch.cat((Xin, torch.cat((X_list[j][1:-1,:], X_list[j][0:-2,:], U_list[j][1:-1,:], U_list[j][0:-2,:]), 1)),0)
-                Xout = torch.cat((Xout, X_list[j][2:,:] - X_list[j][1:-1,:]),0)
+                Xin = torch.cat((Xin, torch.cat((X_list[j][1:-1,:], X_list[j][0:-2,:], U_list[j][1:-1,:], U_list[j][0:-2,:]), 1)), 0)
+                Xout = torch.cat((Xout, X_list[j][2:,:] - X_list[j][1:-1,:]), 0)
         
         else:
             raise ValueError('target must be either full or delta \n back_step must be either 1 or 2')
@@ -1332,7 +1384,8 @@ class CGPDM(GPDM):
 
 
 
-    def rollout(self, num_steps, control_actions, X0, X1=None, flg_sample_X=False, flg_sample_Y=False, flg_noise=False):
+    def rollout(self, num_steps, control_actions, X0, X1 = None,
+                flg_sample_X = False, flg_sample_Y = False, flg_noise = False):
         """
         Generate a rollout of length 'num_steps'. Return latent and observation trajectories
         
@@ -1371,25 +1424,28 @@ class CGPDM(GPDM):
             raise ValueError('len(control_actions) must be equal to num_steps!')
 
         with torch.no_grad():
-            X_hat = torch.zeros((num_steps, self.d), dtype=self.dtype, device=self.device)
+            X_hat = torch.zeros((num_steps, self.d),
+                dtype = self.dtype, device = self.device)
             if X1 is None:
                 X1 = X0
 
             # init latent variables
-            X_hat[0,:] = torch.tensor(X0, dtype=self.dtype, device=self.device)
+            X_hat[0,:] = torch.tensor(X0,
+                    dtype = self.dtype, device = self.device)
             t_start = 0
             if self.dyn_back_step == 2:
-                X_hat[1,:] = torch.tensor(X1, dtype=self.dtype, device=self.device)
+                X_hat[1,:] = torch.tensor(X1,
+                        dtype = self.dtype, device = self.device)
                 t_start = 1
 
             # generate latent rollout
             for t in range(t_start,num_steps):
                 if self.dyn_back_step == 1:
-                    Xin = torch.cat((X_hat[t:t+1,:], control_actions[t:t+1,:]),1)
+                    Xin = torch.cat((X_hat[t:t+1,:], control_actions[t:t+1,:]), 1)
                 if self.dyn_back_step == 2:
-                    Xin = torch.cat((X_hat[t:t+1,:], X_hat[t-1:t,:], control_actions[t:t+1,:], control_actions[t-1:t,:]),1)
+                    Xin = torch.cat((X_hat[t:t+1,:], X_hat[t-1:t,:], control_actions[t:t+1,:], control_actions[t-1:t,:]), 1)
                 mean_Xout_pred, var_Xout_pred = self.map_x_dynamics(Xin, flg_noise)
-                X_hat[t+1:t+2,:] = self.get_next_x(mean_Xout_pred, var_Xout_pred, X_hat[t:t+1,:], flg_sample=flg_sample_X)
+                X_hat[t+1:t+2,:] = self.get_next_x(mean_Xout_pred, var_Xout_pred, X_hat[t:t+1,:], flg_sample = flg_sample_X)
 
             # map to observation space
             mean_Y_pred, var_Y_pred = self.map_x_to_y(X_hat, flg_noise)
