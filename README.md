@@ -1,5 +1,5 @@
 # cgpdm-lib
-Python library implementing __Controlled Gaussian Process Dynamical Models__ (C-GPDMs).
+Python library implementing __Controlled Gaussian Process Dynamical Models__ (CGPDMs).
 
 Class __GPDM()__ implements original model from __Wang et al. (2005) "Gaussian process dynamical models"__.
 
