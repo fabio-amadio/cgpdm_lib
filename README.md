@@ -47,12 +47,15 @@ Open a terminal inside __example/__ folder.
 (__train_gpdm.py__ and __load_gpdm.py__ scripts works analogously but applying the original GPDM on the same some cloth movement dataset)
 
 ## Citing
-If you use this package for any academic work, please cite our original [paper](https://arxiv.org/pdf/2103.06615.pdf).
+If you use this package for any academic work, please cite our original [paper](https://link.springer.com/article/10.1007/s40435-023-01205-6).
 ```bibtex
-@article{amadio2021controlled,
-  title={Controlled Gaussian Process Dynamical Models with Application to Robotic Cloth Manipulation},
-  author={Amadio, Fabio and Delgado-Guerrero, Juan Antonio and Colom{\'e}, Adri{\`a} and Torras, Carme},
-  journal={arXiv preprint arXiv:2103.06615},
-  year={2021}
+@article{amadio2023controlled,
+  title={Controlled gaussian process dynamical models with application to robotic cloth manipulation},
+  author={Amadio, Fabio and Delgado-Guerrero, Juan Antonio and Colom{\'e}, Adria and Torras, Carme},
+  journal={International Journal of Dynamics and Control},
+  pages={1--11},
+  year={2023},
+  publisher={Springer},
+  doi={10.1007/s40435-023-01205-6}
 }
 ```
